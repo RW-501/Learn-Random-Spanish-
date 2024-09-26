@@ -39,7 +39,7 @@ function loadRandomSentence() {
     const mixedSentence = randomizeSpanishWords(currentSentence.english, currentSentence.mappings);
     document.getElementById('mixedSentence').textContent = mixedSentence;
 
-    readSentence(mixedSentence);
+    readSentence(currentSentence.english, currentSentence.spanish); // Pass both sentences
 }
 
 function randomizeSpanishWords(english, mappings) {
@@ -56,8 +56,15 @@ function randomizeSpanishWords(english, mappings) {
     return mixedSentence;
 }
 
-function readSentence(sentence) {
-    const utterance = new SpeechSynthesisUtterance(sentence);
-    utterance.lang = 'en-US'; // Set language to English
-    speechSynthesis.speak(utterance);
+function readSentence(english, spanish) {
+    const utteranceEnglish = new SpeechSynthesisUtterance(english);
+    utteranceEnglish.lang = 'en-US'; // Set language to English
+    speechSynthesis.speak(utteranceEnglish);
+
+    // Create a small delay before speaking the Spanish translation
+    utteranceEnglish.onend = function() {
+        const utteranceSpanish = new SpeechSynthesisUtterance(spanish);
+        utteranceSpanish.lang = 'es-ES'; // Set language to Spanish
+        speechSynthesis.speak(utteranceSpanish);
+    };
 }
