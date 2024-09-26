@@ -1,16 +1,33 @@
 let currentSentence = {};
 const audioPlayer = document.getElementById('audioPlayer');
+let sentences = {}; // To hold the loaded data
 
-document.getElementById('nextSentenceButton').addEventListener('click', function() {
+// Load sentences data from the JSON file
+fetch('data.json')
+    .then(response => response.json())
+    .then(data => {
+        sentences = data; // Store the JSON data in the sentences variable
+    })
+    .catch(error => {
+        console.error("Error loading data.json:", error);
+    });
+
+document.getElementById('nextSentenceButton').addEventListener('click', function () {
     loadRandomSentence();
 });
 
 function loadRandomSentence() {
     const category = document.getElementById('categorySelect').value;
     const difficulty = document.getElementById('difficultySelect').value;
-    
+
+    // Check if the data is loaded before proceeding
+    if (!sentences[category]) {
+        alert("No sentences available for this category and difficulty.");
+        return;
+    }
+
     const filteredSentences = sentences[category].filter(sentence => sentence.difficulty === difficulty);
-    
+
     if (filteredSentences.length === 0) {
         alert("No sentences available for this category and difficulty.");
         return;
